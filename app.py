@@ -1,13 +1,14 @@
 import streamlit as st
-import openai
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Set up OpenAI API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Initialize the OpenAI client with your API key
+api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key)
 
 # Define the Streamlit app
 def main():
@@ -30,20 +31,18 @@ def main():
         """
 
         # Call OpenAI API to generate titles with ChatCompletion
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Use gpt-3.5-turbo
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",  # Ensure this is a correct model
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": blog_title_generator_prompt},
             ],
             max_tokens=150,
-            n=1,
-            stop=None,
             temperature=0.7
         )
 
         # Extract and display the generated titles
-        generated_text = response['choices'][0]['message']['content'].strip()
+        generated_text = response.choices[0].message.content.strip()
         st.write("Generated Titles:")
         st.write(generated_text)
 
