@@ -1,16 +1,9 @@
 import streamlit as st
-import os
-from dotenv import load_dotenv
 from openai import OpenAI
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Initialize the OpenAI client with your API key
-api_key = os.getenv("OPENAI_API_KEY")
+# Retrieve OpenAI API key from Streamlit secrets
+api_key = st.secrets["OPENAI_API_KEY"]
+# Initialize the OpenAI client
 client = OpenAI(api_key=api_key)
-
-# Define the Streamlit app
 def main():
     st.title("Blog Title Generator")
     st.write("Generate SEO-optimized, attention-grabbing blog titles!")
@@ -32,7 +25,7 @@ def main():
 
         # Call OpenAI API to generate titles with ChatCompletion
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Ensure this is a correct model
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": blog_title_generator_prompt},
